@@ -93,7 +93,11 @@
       <button onclick="togglePlay()" id="play-btn">▶️ Play</button>
       <select id="radio-select" onchange="changeStation()"></select>
     </div>
-    <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
+    
+    <div style="margin-top: 1rem;">
+      <span style="font-size: 0.9rem;">Tempo: <span id="time-display">00:00</span></span>
+    </div>
+    
     <div class="visualizer" id="visualizer">
       <div class="bar"></div><div class="bar"></div><div class="bar"></div>
       <div class="bar"></div><div class="bar"></div><div class="bar"></div>
@@ -465,6 +469,7 @@
     const radioSelect = document.getElementById('radio-select');
     const progressBar = document.getElementById('progress-bar');
     const bars = document.querySelectorAll('.bar');
+let animationStyle = '';
 
     radios.forEach((radio, index) => {
       const option = document.createElement('option');
@@ -473,7 +478,14 @@
       radioSelect.appendChild(option);
     });
 
-    function changeStation() {
+    
+function changeStation() {
+  const cor = '#'+Math.floor(Math.random()*16777215).toString(16);
+  bars.forEach(bar => {
+    bar.style.background = cor;
+  });
+  animationStyle = cor;
+
       const index = radioSelect.value;
       const selected = radios[index];
       audio.src = selected.url;
@@ -496,7 +508,29 @@
       }
     }
 
-    setInterval(() => {
+    
+setInterval(() => {
+  if (!audio.paused) {
+    bars.forEach(bar => {
+      bar.style.height = Math.random() * 60 + 10 + 'px';
+    });
+
+    // Tempo decorrido
+    const timeDisplay = document.getElementById("time-display");
+    const secs = Math.floor(audio.currentTime);
+    const min = String(Math.floor(secs / 60)).padStart(2, '0');
+    const seg = String(secs % 60).padStart(2, '0');
+    timeDisplay.textContent = `${min}:${seg}`;
+  }
+}, 1000);
+
+setInterval(() => {
+  if (!audio.paused && audio.duration > 0) {
+    const progress = (audio.currentTime / audio.duration) * 100;
+    progressBar.style.width = progress + "%";
+  }
+}, 200);
+
       if (!audio.paused) {
         bars.forEach(bar => {
           bar.style.height = Math.random() * 60 + 10 + 'px';
@@ -504,7 +538,29 @@
       }
     }, 150);
 
-    setInterval(() => {
+    
+setInterval(() => {
+  if (!audio.paused) {
+    bars.forEach(bar => {
+      bar.style.height = Math.random() * 60 + 10 + 'px';
+    });
+
+    // Tempo decorrido
+    const timeDisplay = document.getElementById("time-display");
+    const secs = Math.floor(audio.currentTime);
+    const min = String(Math.floor(secs / 60)).padStart(2, '0');
+    const seg = String(secs % 60).padStart(2, '0');
+    timeDisplay.textContent = `${min}:${seg}`;
+  }
+}, 1000);
+
+setInterval(() => {
+  if (!audio.paused && audio.duration > 0) {
+    const progress = (audio.currentTime / audio.duration) * 100;
+    progressBar.style.width = progress + "%";
+  }
+}, 200);
+
       if (!audio.paused && audio.duration > 0) {
         const progress = (audio.currentTime / audio.duration) * 100;
         progressBar.style.width = progress + "%";

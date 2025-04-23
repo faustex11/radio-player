@@ -1,25 +1,23 @@
-
 <!DOCTYPE html>
 <html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Player Estético com 71 Rádios</title>
+  <title>Player de Rádios</title>
   <style>
     body {
-      margin: 0;
-      background: #0d0d0d;
+      background: #111;
       color: #fff;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
     }
     .container {
       max-width: 460px;
       margin: 2rem auto;
-      padding: 2rem;
-      background: #1c1c1c;
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(255, 51, 102, 0.3);
-      text-align: center;
+      background: #1e1e1e;
+      padding: 1.5rem;
+      border-radius: 1.5rem;
     }
     .radio-img {
       width: 120px;
@@ -34,7 +32,7 @@
       animation-play-state: running;
     }
     @keyframes spin {
-      0% { transform: rotate(0); }
+      0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
     select, button {
@@ -51,20 +49,6 @@
     select {
       background: #333;
       color: white;
-    }
-    .progress {
-      width: 100%;
-      height: 8px;
-      background: #444;
-      border-radius: 4px;
-      overflow: hidden;
-      margin: 1rem 0;
-    }
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: #ff3366;
-      transition: width 0.2s;
     }
     .visualizer {
       display: flex;
@@ -93,18 +77,15 @@
       <button onclick="togglePlay()" id="play-btn">▶️ Play</button>
       <select id="radio-select" onchange="changeStation()"></select>
     </div>
-    
     <div style="margin-top: 1rem;">
-      <span style="font-size: 0.9rem;">Tempo: <span id="time-display">00:00</span></span>
+      <span>Tempo: <span id="time-display">00:00</span></span>
     </div>
-    
-    <div class="visualizer" id="visualizer">
+    <div class="visualizer">
       <div class="bar"></div><div class="bar"></div><div class="bar"></div>
       <div class="bar"></div><div class="bar"></div><div class="bar"></div>
       <div class="bar"></div><div class="bar"></div><div class="bar"></div>
     </div>
   </div>
-
   <script>
     const radios = [{
         nome: "Westside Radio",
@@ -461,15 +442,15 @@
         url: "https://media-ice.musicradio.com/ClassicFMMoviesMP3",
         imagem: "https://radiomap.eu/uk/images/classic-movies.svg"
     }];
+
     const audio = document.getElementById('audio');
     const radioImg = document.getElementById('radio-img');
     const radioName = document.getElementById('radio-name');
     const player = document.getElementById('player');
     const playBtn = document.getElementById('play-btn');
     const radioSelect = document.getElementById('radio-select');
-    const progressBar = document.getElementById('progress-bar');
     const bars = document.querySelectorAll('.bar');
-let animationStyle = '';
+    const timeDisplay = document.getElementById('time-display');
 
     radios.forEach((radio, index) => {
       const option = document.createElement('option');
@@ -478,14 +459,7 @@ let animationStyle = '';
       radioSelect.appendChild(option);
     });
 
-    
-function changeStation() {
-  const cor = '#'+Math.floor(Math.random()*16777215).toString(16);
-  bars.forEach(bar => {
-    bar.style.background = cor;
-  });
-  animationStyle = cor;
-
+    function changeStation() {
       const index = radioSelect.value;
       const selected = radios[index];
       audio.src = selected.url;
@@ -494,6 +468,11 @@ function changeStation() {
       audio.play();
       playBtn.textContent = '⏸️ Pause';
       player.classList.add('playing');
+      const cor = '#' + Math.floor(Math.random()*16777215).toString(16);
+      bars.forEach(bar => {
+        bar.style.background = cor;
+        bar.style.height = Math.random() * 60 + 10 + 'px';
+      });
     }
 
     function togglePlay() {
@@ -508,62 +487,17 @@ function changeStation() {
       }
     }
 
-    
-setInterval(() => {
-  if (!audio.paused) {
-    bars.forEach(bar => {
-      bar.style.height = Math.random() * 60 + 10 + 'px';
-    });
-
-    const timeDisplay = document.getElementById("time-display");
-    const secs = Math.floor(audio.currentTime);
-    const min = String(Math.floor(secs / 60)).padStart(2, '0');
-    const seg = String(secs % 60).padStart(2, '0');
-    timeDisplay.textContent = `${min}:${seg}`;
-  }
-}, 1000);
-
-setInterval(() => {
-  if (!audio.paused && audio.duration > 0) {
-    const progress = (audio.currentTime / audio.duration) * 100;
-    progressBar.style.width = progress + "%";
-  }
-}, 200);
-
+    setInterval(() => {
       if (!audio.paused) {
         bars.forEach(bar => {
           bar.style.height = Math.random() * 60 + 10 + 'px';
         });
+        const secs = Math.floor(audio.currentTime);
+        const min = String(Math.floor(secs / 60)).padStart(2, '0');
+        const seg = String(secs % 60).padStart(2, '0');
+        timeDisplay.textContent = `${min}:${seg}`;
       }
-    }, 150);
-
-    
-setInterval(() => {
-  if (!audio.paused) {
-    bars.forEach(bar => {
-      bar.style.height = Math.random() * 60 + 10 + 'px';
-    });
-
-    const timeDisplay = document.getElementById("time-display");
-    const secs = Math.floor(audio.currentTime);
-    const min = String(Math.floor(secs / 60)).padStart(2, '0');
-    const seg = String(secs % 60).padStart(2, '0');
-    timeDisplay.textContent = `${min}:${seg}`;
-  }
-}, 1000);
-
-setInterval(() => {
-  if (!audio.paused && audio.duration > 0) {
-    const progress = (audio.currentTime / audio.duration) * 100;
-    progressBar.style.width = progress + "%";
-  }
-}, 200);
-
-      if (!audio.paused && audio.duration > 0) {
-        const progress = (audio.currentTime / audio.duration) * 100;
-        progressBar.style.width = progress + "%";
-      }
-    }, 200);
+    }, 1000);
 
     radioSelect.value = 0;
     changeStation();
